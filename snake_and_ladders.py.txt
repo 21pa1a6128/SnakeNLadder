@@ -1,0 +1,69 @@
+import random
+
+board = [
+    [100, 99, 98, 97, 96, 95, 94, 93, 92, 91],
+    [81, 82, 83, 84, 85, 86, 87, 88, 89, 90],
+    [80, 79, 78, 77, 76, 75, 74, 73, 72, 71],
+    [61, 62, 63, 64, 65, 66, 67, 68, 69, 70],
+    [60, 59, 58, 57, 56, 55, 54, 53, 52, 51],
+    [41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+    [40, 39, 38, 37, 36, 35, 34, 33, 32, 31],
+    [21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+    [20, 19, 18, 17, 16, 15, 14, 13, 12, 11],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+]
+
+snakes = {16: 6, 48: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78}
+ladders = {1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100}
+
+print("Snakes and Ladders Board:")
+for row in board:
+    for cell in row:
+        if cell in snakes:
+            print(f"S{snakes[cell]:02d}", end="\t\t") 
+        elif cell in ladders:
+            print(f"L{ladders[cell]:02d}", end="\t\t")
+        else:
+            print(f"{cell:02d}", end="\t\t")
+    print("\n")
+
+class Player:
+    def __init__(self, player_id, name):
+        self.player_id = player_id
+        self.name = name
+        self.position = 0
+
+    def move(self, roll):
+        if self.position + roll <= 100:
+            self.position += roll
+            if self.position in snakes:
+                print(f"{self.name} got bitten by a snake! Slid down to {snakes[self.position]}")
+                self.position = snakes[self.position]
+            elif self.position in ladders:
+                print(f"Lucky! {self.name} climbed up a ladder to {ladders[self.position]}")
+                self.position = ladders[self.position]
+
+def create_players(num_players):
+    players = []
+    for i in range(1, num_players + 1):
+        name = input(f"Enter the name for player {i}: ")
+        player = Player(player_id=i, name=name)
+        players.append(player)
+    return players
+
+def snakes_and_ladders():
+    num_players = int(input("Enter the number of players: "))
+    players = create_players(num_players)
+
+    while True:
+        for player in players:
+            input(f"Press Enter to roll the dice for {player.name}: ")
+            roll = random.randint(1, 6)
+            print(f"{player.name} rolled a {roll}")
+            player.move(roll)
+            print(f"{player.name}'s new position: {player.position}")
+
+            if player.position == 100:
+                print(f"{player.name} wins!")
+                exit()
+snakes_and_ladders()
